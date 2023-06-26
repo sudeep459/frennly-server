@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +24,18 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    private String profileImage;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profileImage, user.profileImage);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, email, password, profileImage);
+    }
 }
