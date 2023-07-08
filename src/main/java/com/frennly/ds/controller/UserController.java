@@ -5,6 +5,7 @@ import com.frennly.ds.model.User;
 import com.frennly.ds.payload.request.UpdateUserRequest;
 import com.frennly.ds.payload.response.ApiResponse;
 import com.frennly.ds.service.core.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/users")
 public class UserController {
     @Autowired
@@ -24,8 +26,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
     }
 
-    @GetMapping("/{query}")
-    public ResponseEntity<List<User>> searchUserHandler(@PathVariable("query") String query) {
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List<User>> searchUserHandler(@PathVariable("name") String query) {
+        log.info("searchUserHandler " + query );
         List<User> users = userService.searchUser(query);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
