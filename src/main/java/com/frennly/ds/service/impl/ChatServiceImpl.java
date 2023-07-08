@@ -17,6 +17,8 @@ import java.util.Optional;
 public class ChatServiceImpl implements ChatService {
     @Autowired
     private ChatRepository chatRepository;
+
+    @Autowired
     private UserService userService;
 
     @Override

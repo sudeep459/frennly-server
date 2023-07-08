@@ -17,8 +17,4 @@ public class HomeController {
     public ResponseEntity<String> HomeController() {
         return ResponseEntity.status(HttpStatus.OK).body("welcome to frennly api");
     }
-    @Scheduled(cron = "0 */5 * ? * *")
-    public void runEvey5Minutes() {
-        log.info("Current time is :: " + LocalDate.now());
-    }
 }
