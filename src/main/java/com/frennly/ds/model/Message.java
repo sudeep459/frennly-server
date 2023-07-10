@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -16,7 +19,9 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String content;
-    private LocalDateTime timestamp;
+    private String date;
+    private String time;
+//    private ZonedDateTime timestamp;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName="id")
     private User user;

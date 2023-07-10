@@ -11,14 +11,18 @@ import com.frennly.ds.repository.MessageRepository;
 import com.frennly.ds.service.core.ChatService;
 import com.frennly.ds.service.core.MessageService;
 import com.frennly.ds.service.core.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
@@ -30,6 +34,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message sendMessage(SendMessageRequest req) throws UserException, ChatException {
+        log.info("MessageService sendMessage");
         User user = userService.findUserById(req.getUserId());
         Chat chat = chatService.findChatById(req.getChatId());
 
@@ -37,7 +42,10 @@ public class MessageServiceImpl implements MessageService {
         message.setChat(chat);
         message.setUser(user);
         message.setContent(req.getContent());
-        message.setTimestamp(LocalDateTime.now());
+        ZonedDateTime ISTtime = LocalDateTime.now().atZone(ZoneId.of("Asia/Kolkata"));
+        message.setDate(ISTtime.toString().split("T")[0]);
+        String fullTime = ISTtime.toString().split("T")[1];
+        message.setTime(fullTime.substring(0,5));
         return messageRepository.save(message);
     }
 

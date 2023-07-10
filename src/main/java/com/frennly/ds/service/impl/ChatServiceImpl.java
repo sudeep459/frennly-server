@@ -7,6 +7,7 @@ import com.frennly.ds.model.User;
 import com.frennly.ds.repository.ChatRepository;
 import com.frennly.ds.service.core.ChatService;
 import com.frennly.ds.service.core.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ChatServiceImpl implements ChatService {
     @Autowired
     private ChatRepository chatRepository;
@@ -38,6 +40,7 @@ public class ChatServiceImpl implements ChatService {
     }
     @Override
     public Chat findChatById(Integer chatId) throws ChatException {
+        log.info("ChatService findChatById");
         Optional<Chat> chat = chatRepository.findById(chatId);
         if(chat.isPresent()) {
             return chat.get();

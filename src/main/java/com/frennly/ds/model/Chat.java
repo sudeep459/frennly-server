@@ -16,13 +16,9 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String chat_name;
-    private String chat_image;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private User createdBy;
     @ManyToMany
     private Set<User> users = new HashSet<>();
-    @OneToMany
-    private List<Message> messages = new ArrayList<>();
 }
