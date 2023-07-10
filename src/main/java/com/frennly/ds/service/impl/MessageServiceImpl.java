@@ -42,8 +42,7 @@ public class MessageServiceImpl implements MessageService {
         message.setChat(chat);
         message.setUser(user);
         message.setContent(req.getContent());
-        ZonedDateTime UTCtime = LocalDateTime.now().atZone(ZoneId.of("UTC"));
-        ZonedDateTime ISTtime = UTCtime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+        ZonedDateTime ISTtime = LocalDateTime.now().atZone(ZoneId.of("Asia/Kolkata"));
         message.setDate(ISTtime.toString().split("T")[0]);
         String fullTime = ISTtime.toString().split("T")[1];
         message.setTime(fullTime.substring(0,5));
