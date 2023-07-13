@@ -1,16 +1,22 @@
 package com.frennly.ds.service.impl;
 
+import com.frennly.ds.enums.UserType;
 import com.frennly.ds.exception.ChatException;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.Chat;
 import com.frennly.ds.model.User;
+import com.frennly.ds.payload.response.ChatResponse;
+import com.frennly.ds.payload.response.UserDetailsResponse;
 import com.frennly.ds.repository.ChatRepository;
 import com.frennly.ds.service.core.ChatService;
+import com.frennly.ds.service.core.MessageService;
 import com.frennly.ds.service.core.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,18 +30,25 @@ public class ChatServiceImpl implements ChatService {
     private UserService userService;
 
     @Override
-    public Chat createChat(User reqUser, Integer userId2) throws UserException {
-        User user = userService.findUserById(userId2);
-        Chat isChat = chatRepository.findSingleChatByUserIds(user, reqUser);
+    public Chat createChat(User reqUser, Integer userId2) throws UserException, ChatException {
+        User therapist = userService.findUserById(userId2);
+
+        Chat isChat = chatRepository.findSingleChatByUserIds(reqUser,therapist);
 
         if(isChat != null) {
             return isChat;
         }
 
+        if(therapist.getUserType()!= UserType.THERAPIST)
+            throw new ChatException("Initiating a chat with another user is not allowed. Please provide a therapist id to continue");
+        if(reqUser.getUserType()== UserType.THERAPIST)
+            throw new ChatException("you cannot start a chat as a therapist. Wait for a user to start a chat");
+
         Chat chat = new Chat();
-        chat.setCreatedBy(reqUser);
-        chat.getUsers().add(user);
-        chat.getUsers().add(reqUser);
+        chat.setUser(reqUser);
+        chat.setTherapist(therapist);
+        chat.setCreatedOn(Timestamp.from(Instant.now()));
+        chat.setActive(true);
         return chatRepository.save(chat);
     }
     @Override
@@ -56,7 +69,10 @@ public class ChatServiceImpl implements ChatService {
         if(user == null) {
             throw new UserException("User not found with id " + userId);
         }
-        return chatRepository.findChatByUserid(user.getId());
+        log.info("ChatService findAllChatByUserId");
+        List<Chat> chats = chatRepository.findChatByUserid(user.getId());
+        log.info("ChatService findAllchats - " + chats);
+        return chats;
     }
 
     @Override
@@ -65,11 +81,18 @@ public class ChatServiceImpl implements ChatService {
 
         if(opt.isPresent()) {
             Chat chat = opt.get();
-            if(chat.getCreatedBy().getId().equals(userId)) {
+            if(chat.getUser().getId().equals(userId)) {
                 chatRepository.deleteById(chat.getId());
             } else {
                 throw new ChatException("You are not allowed to delete this chat");
             }
         }
+    }
+
+
+
+    @Override
+    public void updateChat(Chat chat) {
+        chatRepository.save(chat);
     }
 }

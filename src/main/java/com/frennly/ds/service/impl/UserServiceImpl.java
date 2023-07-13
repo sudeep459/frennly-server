@@ -1,10 +1,13 @@
 package com.frennly.ds.service.impl;
 
 import com.frennly.ds.config.TokenProvider;
+import com.frennly.ds.enums.UserType;
 import com.frennly.ds.payload.request.UpdateUserRequest;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.User;
+import com.frennly.ds.payload.response.UserDetailsResponse;
 import com.frennly.ds.repository.UserRepository;
+import com.frennly.ds.service.core.MappingService;
 import com.frennly.ds.service.core.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MappingService mappingService;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -50,6 +57,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+
+
     @Override
     public User updateUser(Integer userId, UpdateUserRequest req) throws UserException {
         User user = findUserById(userId);
@@ -63,10 +72,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchUser(String query) {
+    public List<UserDetailsResponse> searchUser(String query, User reqUser) {
         log.info("searchuser service  - " + query);
-        List<User> users = userRepository.searchUser(query+"%");
-        return users;
+        List<User> users = userRepository.searchUser(query+"%", UserType.THERAPIST).stream().filter(user -> !user.getId().equals(reqUser.getId())).collect(Collectors.toList());
+        return users.stream().map(mappingService::mapUsertoUserResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -83,4 +92,17 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
+
+    @Override
+    public List<UserDetailsResponse> findAllTherapists(User reqUser) throws UserException {
+        List<User> therapists = null;
+        if(reqUser.getUserType() == UserType.USER)
+            therapists = userRepository.findByUserType(UserType.THERAPIST);
+        else {
+            throw new UserException("You have to be logged in as a user to view therapists");
+        }
+        return therapists.stream().map(mappingService::mapUsertoUserResponse).collect(Collectors.toList());
+    }
+
+
 }

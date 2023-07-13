@@ -50,6 +50,7 @@ public class AuthController {
         createdUser.setUsername(username);
         createdUser.setEmail(email);
         createdUser.setPassword(passwordEncoder.encode(password));
+        createdUser.setUserType(user.getUserType());
         userService.saveUser(createdUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);

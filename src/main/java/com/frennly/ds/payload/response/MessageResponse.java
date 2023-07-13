@@ -1,7 +1,6 @@
 package com.frennly.ds.payload.response;
 
 
-import com.frennly.ds.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,15 +8,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetailsResponse {
+public class MessageResponse {
 
     private Integer id;
 
-    private String username;
+    private String content;
 
-    private String email;
+    private String date;
 
-    private UserType userType;
+    private String time;
 
-    private String profileImage;
+    private UserDetailsResponse sender;
+
+    private ChatResponse chat;
 }

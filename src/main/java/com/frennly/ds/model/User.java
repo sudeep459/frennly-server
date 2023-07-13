@@ -1,5 +1,6 @@
 package com.frennly.ds.model;
 
+import com.frennly.ds.enums.UserType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,16 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+
     private String profileImage;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserType userType;
+
+    private Integer score;
+
+    private Double ratings;
 
     @Override
     public boolean equals(Object o) {

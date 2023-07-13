@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRequest {
+
+    // user id of the therapist. A therapist cannot start the chat.
     private Integer userId;
 
 }

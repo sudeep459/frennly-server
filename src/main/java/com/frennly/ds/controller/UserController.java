@@ -1,9 +1,12 @@
 package com.frennly.ds.controller;
 
+import com.frennly.ds.enums.UserType;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.User;
 import com.frennly.ds.payload.request.UpdateUserRequest;
 import com.frennly.ds.payload.response.ApiResponse;
+import com.frennly.ds.payload.response.UserDetailsResponse;
+import com.frennly.ds.service.core.MappingService;
 import com.frennly.ds.service.core.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +23,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MappingService mappingService;
+
     @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfileHandler(@RequestHeader("Authorization") String token) throws UserException {
+    public ResponseEntity<UserDetailsResponse> getUserProfileHandler(@RequestHeader("Authorization") String token) throws UserException {
         User user = userService.findUserProfile(token);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
+        UserDetailsResponse res = mappingService.mapUsertoUserResponse(user);
+        log.info("user profile found: " + user);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<User>> searchUserHandler(@PathVariable("name") String query, @RequestHeader("Authorization") String token) throws UserException {
-        User user = userService.findUserProfile(token);
+    public ResponseEntity<List<UserDetailsResponse>> searchUserHandler(@PathVariable("name") String query, @RequestHeader("Authorization") String token) throws UserException {
+        User reqUser = userService.findUserProfile(token);
 
         log.info("searchUserHandler " + query );
-        List<User> users = userService.searchUser(query);
+        List<UserDetailsResponse> users = userService.searchUser(query, reqUser);
         return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
+    @GetMapping("/get-therapists")
+    public ResponseEntity<List<UserDetailsResponse>> getAllTherapists(@RequestHeader("Authorization") String token) throws UserException {
+        User reqUser = userService.findUserProfile(token);
+        List<UserDetailsResponse> therapists = userService.findAllTherapists(reqUser);
+        log.info("UserController getAllTherapists - " + therapists);
+        return ResponseEntity.status(HttpStatus.OK).body(therapists);
+
     }
 
     @PutMapping("/update")
