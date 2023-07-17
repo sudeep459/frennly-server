@@ -1,5 +1,6 @@
 package com.frennly.ds.service.core;
 
+import com.frennly.ds.payload.request.PreferredTimingsRequest;
 import com.frennly.ds.payload.request.UpdateUserRequest;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.User;
@@ -17,5 +18,6 @@ public interface UserService {
     public User findUserByEmail(String email);
     public User saveUser(User user);
     public List<UserDetailsResponse> findAllTherapists(User reqUser) throws UserException;
+    public void addPreferredTimings(PreferredTimingsRequest req, String username) throws UserException;
 
 }

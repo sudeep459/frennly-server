@@ -43,6 +43,7 @@ public class MappingServiceImpl implements MappingService {
         if(user.getEmail()!=null)userDetailsResponse.setEmail(user.getEmail());
         if(user.getProfileImage()!=null)userDetailsResponse.setProfileImage(user.getProfileImage());
         if(user.getUserType()!=null)userDetailsResponse.setUserType(user.getUserType());
+        if(user.getPreferredTimings()!=null)userDetailsResponse.setPreferredTimings(user.getPreferredTimings());
         return userDetailsResponse;
     }
 }

@@ -3,6 +3,7 @@ package com.frennly.ds.controller;
 import com.frennly.ds.enums.UserType;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.User;
+import com.frennly.ds.payload.request.PreferredTimingsRequest;
 import com.frennly.ds.payload.request.UpdateUserRequest;
 import com.frennly.ds.payload.response.ApiResponse;
 import com.frennly.ds.payload.response.UserDetailsResponse;
@@ -60,4 +61,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
     }
 
+    @PutMapping("/set-preferred-timings")
+    public ResponseEntity<ApiResponse> addPreferredTimings(@RequestBody PreferredTimingsRequest req, @RequestHeader("Authorization") String token) throws UserException {
+        User user = userService.findUserProfile(token);
+        userService.addPreferredTimings(req, user.getUsername());
+        ApiResponse res = new ApiResponse("preferredTimings updated successfully", true);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
+    }
 }

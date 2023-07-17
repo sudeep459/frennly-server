@@ -20,4 +20,6 @@ public class UserDetailsResponse {
     private UserType userType;
 
     private String profileImage;
+
+    private String preferredTimings;
 }

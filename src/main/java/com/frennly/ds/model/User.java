@@ -32,6 +32,8 @@ public class User {
     @Column(nullable = false)
     private UserType userType;
 
+    private String preferredTimings;
+
     private Integer score;
 
     private Double ratings;
