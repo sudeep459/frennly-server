@@ -35,7 +35,10 @@ public class SecurityConfig {
                         CorsConfiguration cfg = new CorsConfiguration();
                         cfg.setAllowedOrigins(Arrays.asList(
                                 "http://localhost:3000/",
-                                "https://therapy-mauve.vercel.app/"
+                                "http://15.206.85.178:3000/",
+                                "http://15.206.85.178/",
+                                "https://therapy-mauve.vercel.app/",
+                                "http://friennly.in/"
                         ));
                         cfg.setAllowedMethods(Collections.singletonList("*"));
                         cfg.setAllowCredentials(true);
