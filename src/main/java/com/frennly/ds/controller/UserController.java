@@ -68,4 +68,12 @@ public class UserController {
         ApiResponse res = new ApiResponse("preferredTimings updated successfully", true);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
     }
+
+    @GetMapping("/lastActive/{userId}")
+    public ResponseEntity<ApiResponse> lastActive(@PathVariable Integer userId) throws UserException {
+        User user = userService.findUserById(userId);
+        String status = userService.getActiveStatus(user);
+        ApiResponse res = new ApiResponse(status, true);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
 }

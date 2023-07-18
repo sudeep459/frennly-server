@@ -10,13 +10,15 @@ import com.frennly.ds.payload.response.UserDetailsResponse;
 import com.frennly.ds.repository.UserRepository;
 import com.frennly.ds.service.core.MappingService;
 import com.frennly.ds.service.core.UserService;
+import com.frennly.ds.utils.LastSeenMessageGenerator;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -34,6 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    private HashMap<Integer, Timestamp> activeUserList = new HashMap<Integer, Timestamp>();
 
     @Override
     public User findUserById(Integer id) throws UserException {
@@ -57,6 +61,8 @@ public class UserServiceImpl implements UserService {
 
         if(user == null)
             throw new UserException("user not found with username " + username);
+
+        setActiveUserList(user);
 
         return user;
     }
@@ -108,6 +114,7 @@ public class UserServiceImpl implements UserService {
         else {
             throw new UserException("You have to be logged in as a user to view therapists");
         }
+        setActiveUserList(reqUser);
         return therapists.stream().map(mappingService::mapUsertoUserResponse).collect(Collectors.toList());
     }
 
@@ -118,9 +125,22 @@ public class UserServiceImpl implements UserService {
         if(user == null) throw new UserException("User not found with username " + username);
 
         user.setPreferredTimings(req.getReq());
+        setActiveUserList(user);
 
         userRepository.save(user);
     }
 
+    @Override
+    public void setActiveUserList(User user) {
+        log.info("Setting active user list - " + user.getId());
+        activeUserList.put(user.getId(), Timestamp.from(Instant.now()));
+    }
+
+    @Override
+    public String getActiveStatus(User user) {
+        log.info("Active user list - " + activeUserList.toString());
+        if(activeUserList.get(user.getId())!=null) return LastSeenMessageGenerator.getLastSeenMessage(activeUserList.get(user.getId()));
+        return "offline";
+    }
 
 }

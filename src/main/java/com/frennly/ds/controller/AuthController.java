@@ -51,7 +51,10 @@ public class AuthController {
         createdUser.setEmail(email);
         createdUser.setPassword(passwordEncoder.encode(password));
         createdUser.setUserType(user.getUserType());
-        userService.saveUser(createdUser);
+        createdUser = userService.saveUser(createdUser);
+
+        userService.setActiveUserList(createdUser);
+
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -63,7 +66,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest req){
+    public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest req) throws UserException {
         String username = req.getUsername();
         String password = req.getPassword();
 
@@ -72,6 +75,9 @@ public class AuthController {
 
         String jwt = tokenProvider.generateToken(authentication);
         AuthResponse res = new AuthResponse(jwt, true);
+
+//        User user = userService.findUserProfile(jwt);
+//        userService.setActiveUserList(user);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
     }

@@ -51,6 +51,7 @@ public class MessageServiceImpl implements MessageService {
         chat.setLatestMessage(message);
         chatService.updateChat(chat);
         message.setChat(chat);
+        userService.setActiveUserList(user);
         return messageRepository.save(message);
     }
 
@@ -63,6 +64,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
         List<Message> messages = messageRepository.findByChatId(chat.getId());
+        userService.setActiveUserList(reqUser);
         return messages;
     }
 

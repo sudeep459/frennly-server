@@ -49,6 +49,9 @@ public class ChatServiceImpl implements ChatService {
         chat.setTherapist(therapist);
         chat.setCreatedOn(Timestamp.from(Instant.now()));
         chat.setActive(true);
+
+        userService.setActiveUserList(reqUser);
+
         return chatRepository.save(chat);
     }
     @Override
@@ -69,9 +72,10 @@ public class ChatServiceImpl implements ChatService {
         if(user == null) {
             throw new UserException("User not found with id " + userId);
         }
-        log.info("ChatService findAllChatByUserId");
         List<Chat> chats = chatRepository.findChatByUserid(user.getId());
         log.info("ChatService findAllchats - " + chats);
+        userService.setActiveUserList(user);
+
         return chats;
     }
 

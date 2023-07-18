@@ -20,4 +20,7 @@ public interface UserService {
     public List<UserDetailsResponse> findAllTherapists(User reqUser) throws UserException;
     public void addPreferredTimings(PreferredTimingsRequest req, String username) throws UserException;
 
+    void setActiveUserList(User user);
+
+    String getActiveStatus(User user);
 }
