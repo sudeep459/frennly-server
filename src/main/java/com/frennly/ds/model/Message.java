@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,6 +28,8 @@ public class Message {
     private String date;
 
     private String time;
+
+    private Timestamp createdOn;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName="id")

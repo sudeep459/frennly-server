@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -44,9 +46,13 @@ public class MessageServiceImpl implements MessageService {
         message.setSender(user);
         message.setContent(req.getContent());
         ZonedDateTime ISTtime = LocalDateTime.now().atZone(ZoneId.of("Asia/Kolkata"));
+        ISTtime = ISTtime.plusHours(5);
+        ISTtime = ISTtime.plusMinutes(30);
         message.setDate(ISTtime.toString().split("T")[0]);
         String fullTime = ISTtime.toString().split("T")[1];
         message.setTime(fullTime.substring(0,5));
+
+        message.setCreatedOn(Timestamp.from(Instant.now()));
 
         chat.setLatestMessage(message);
         chatService.updateChat(chat);
