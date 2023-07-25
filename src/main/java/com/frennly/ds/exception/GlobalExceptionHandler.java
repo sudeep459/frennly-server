@@ -57,4 +57,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<ErrorDetail> emailExceptionHandler(EmailException e, WebRequest req) {
+        ErrorDetail err = new ErrorDetail(e.getMessage(), req.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
 }

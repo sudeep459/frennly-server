@@ -2,6 +2,7 @@ package com.frennly.ds.service.impl;
 
 import com.frennly.ds.enums.UserType;
 import com.frennly.ds.exception.ChatException;
+import com.frennly.ds.exception.EmailException;
 import com.frennly.ds.exception.MessageException;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.Chat;
@@ -11,6 +12,7 @@ import com.frennly.ds.payload.request.SendMessageRequest;
 import com.frennly.ds.payload.response.MessageResponse;
 import com.frennly.ds.repository.MessageRepository;
 import com.frennly.ds.service.core.ChatService;
+import com.frennly.ds.service.core.EmailService;
 import com.frennly.ds.service.core.MessageService;
 import com.frennly.ds.service.core.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +37,11 @@ public class MessageServiceImpl implements MessageService {
     private UserService userService;
     @Autowired
     private ChatService chatService;
+    @Autowired
+    private EmailService emailService;
 
     @Override
-    public Message sendMessage(SendMessageRequest req) throws UserException, ChatException {
+    public Message sendMessage(SendMessageRequest req) throws UserException, ChatException, EmailException {
         log.info("MessageService sendMessage");
         User user = userService.findUserById(req.getUserId());
         Chat chat = chatService.findChatById(req.getChatId());
@@ -58,6 +62,16 @@ public class MessageServiceImpl implements MessageService {
         chatService.updateChat(chat);
         message.setChat(chat);
         userService.setActiveUserList(user);
+
+        String emailSubject = " has messaged you on Friennly";
+        String emailMessage = "Please check your chat with ";
+
+        if(chat.getUser().getId().equals(user.getId())) {
+            emailService.sendMail(chat.getTherapist().getEmail(), user.getUsername() + emailSubject, emailMessage + user.getUsername()+ "\n friennly.in/chat");
+        } else {
+            emailService.sendMail(chat.getUser().getEmail(), user.getUsername() + emailSubject, emailMessage + user.getUsername() + "\n friennly.in/chat");
+        }
+
         return messageRepository.save(message);
     }
 

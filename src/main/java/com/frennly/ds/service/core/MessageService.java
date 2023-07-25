@@ -1,6 +1,7 @@
 package com.frennly.ds.service.core;
 
 import com.frennly.ds.exception.ChatException;
+import com.frennly.ds.exception.EmailException;
 import com.frennly.ds.exception.MessageException;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.Message;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface MessageService {
 
-    public Message sendMessage(SendMessageRequest req) throws UserException, ChatException;
+    public Message sendMessage(SendMessageRequest req) throws UserException, ChatException, EmailException;
 
     public List<Message> getChatsMessages(Integer chatId, User reqUser) throws ChatException, UserException;
 

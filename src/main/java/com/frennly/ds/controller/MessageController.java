@@ -1,6 +1,7 @@
 package com.frennly.ds.controller;
 
 import com.frennly.ds.exception.ChatException;
+import com.frennly.ds.exception.EmailException;
 import com.frennly.ds.exception.MessageException;
 import com.frennly.ds.exception.UserException;
 import com.frennly.ds.model.Message;
@@ -33,7 +34,7 @@ public class MessageController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<MessageResponse> sendMessageHandler(@RequestBody SendMessageRequest req, @RequestHeader("Authorization")String jwt) throws ChatException, UserException {
+    public ResponseEntity<MessageResponse> sendMessageHandler(@RequestBody SendMessageRequest req, @RequestHeader("Authorization")String jwt) throws ChatException, UserException, EmailException {
         User user = userService.findUserProfile(jwt);
         req.setUserId(user.getId());
         Message message = messageService.sendMessage(req);
