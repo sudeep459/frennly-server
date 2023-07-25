@@ -66,13 +66,17 @@ public class MessageServiceImpl implements MessageService {
         String emailSubject = " has messaged you on Friennly";
         String emailMessage = "Please check your chat with ";
 
+
+
+        Message sentMessage = messageRepository.save(message);
+
         if(chat.getUser().getId().equals(user.getId())) {
             emailService.sendMail(chat.getTherapist().getEmail(), user.getUsername() + emailSubject, emailMessage + user.getUsername()+ "\n friennly.in/chat");
         } else {
             emailService.sendMail(chat.getUser().getEmail(), user.getUsername() + emailSubject, emailMessage + user.getUsername() + "\n friennly.in/chat");
         }
 
-        return messageRepository.save(message);
+        return sentMessage;
     }
 
     @Override
