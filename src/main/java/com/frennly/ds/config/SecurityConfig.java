@@ -38,7 +38,8 @@ public class SecurityConfig {
                                 "http://13.55.80.60:3000/",
                                 "http://13.55.80.60/",
                                 "https://therapy-mauve.vercel.app/",
-                                "http://friennly.in/"
+                                "http://friennly.in/",
+                                "*"
                         ));
                         cfg.setAllowedMethods(Collections.singletonList("*"));
                         cfg.setAllowCredentials(true);
